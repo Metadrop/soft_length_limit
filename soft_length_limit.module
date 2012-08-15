@@ -65,7 +65,7 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
     $form['#attached']['css'][] = drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.css';
     drupal_add_js(array(
       'soft_length_limit' => array(
-        'maxlength_exclude_selectors' => variable_get('soft_limit_length_maxlength_exclude_selectors', array()),
+        'maxlength_exclude_selectors' => variable_get('soft_length_limit_maxlength_exclude_selectors', array()),
       )
         ), array('type' => 'setting'));
   }
@@ -131,6 +131,6 @@ function soft_length_limit_init() {
   drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.js');
   drupal_add_css(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.css');
   drupal_add_js(array('soft_length_limit' => array(
-      'maxlength_exclude_selectors' => variable_get('soft_limit_length_maxlength_exclude_selectors', array())),
+      'maxlength_exclude_selectors' => variable_get('soft_length_limit_maxlength_exclude_selectors', array())),
       ), array('type' => 'setting'));
 }
