@@ -1,0 +1,36 @@
+.soft-length-limit-tooltip {    
+  position: absolute;
+  display: inline-block;
+  background-color: #BE7;
+  padding: 5px;  
+  display:none;
+  z-index:10;
+  border-radius: 5px;
+  color: black;
+}
+
+.soft-length-limit-tooltip:after{
+  content: "";
+  top: -10px;
+  left: 20px;
+  border-width: 0 10px 10px;
+  border-color: #BE7 transparent;
+  border-style: solid;
+  width: 0;
+  display: block;
+  position: absolute;
+}
+
+
+.soft-length-limit-tooltip.exceeded {    
+  background-color: #F60;
+}
+
+.soft-length-limit-tooltip.exceeded:after {    
+  border-color: #F60 transparent;
+}
+
+.soft-length-limit.exceeded {    
+  outline: 3px solid #F60;
+}
+
