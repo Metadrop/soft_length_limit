@@ -1,3 +1,4 @@
 name = Soft length limit
 description = Makes a soft limit on the number of chars in text fields, which warns the user of too long texts
 core = 7.x
+files[]=soft_length_limit.test
