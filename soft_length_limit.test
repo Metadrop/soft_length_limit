@@ -30,11 +30,17 @@ class SoftLengthLimitWebTestCase extends DrupalWebTestCase {
     // Enable any modules required for the test.
     parent::setUp(array('soft_length_limit'));
 
-    //Creating the needed user
-    $this->privileged_user = $this->drupalCreateUser(array('bypass node access', 'administer nodes', 'administer taxonomy', 'edit terms in 1'));
+    // Creating the needed user.
+    $this->privileged_user = $this->drupalCreateUser(
+      array(
+        'bypass node access',
+        'administer nodes',
+        'administer taxonomy',
+        'edit terms in 1',
+      ));
     $this->drupalLogin($this->privileged_user);
 
-    //Creating the needed field on the article node type
+    // Creating the needed field on the article node type.
     $field = array(
       'field_name' => 'field_test',
       'type' => 'text_long',
@@ -75,10 +81,9 @@ class SoftLengthLimitWebTestCase extends DrupalWebTestCase {
   }
 
   /**
-   * Tests that the input element has the right attributes that the javascript should use.
+   * Tests that input element has the attributes that the javascript should use.
    */
   public function testAll() {
-     $this->assertPattern('/<textarea .*class="[^"]*soft-length-limit[^"]*".*data-soft-length-limit="666"/', 'HTML element should contain the necessary attributesfor the soft length limiter javascript');
+    $this->assertPattern('/<textarea .*class="[^"]*soft-length-limit[^"]*".*data-soft-length-limit="666"/', 'HTML element should contain the necessary attributesfor the soft length limiter javascript');
   }
-
 }
