@@ -82,7 +82,7 @@
           $(this).addClass('exceeded');
         }
 
-        if (val.length == 0) {
+        if (val.length === 0) {
           $tooltip.html(Drupal.t('Should contain max. <strong>@limit</strong> characters.',{
             '@limit': limit
           }));
