@@ -6,9 +6,7 @@
  */
 
 /**
- * Tests the relevant functionality provided by the soft_length_limit module
- *
- * @see DrupalWebTestCase
+ * Tests the relevant functionality provided by the soft_length_limit module.
  */
 class SoftLengthLimitWebTestCase extends DrupalWebTestCase {
 
