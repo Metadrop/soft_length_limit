@@ -2,28 +2,6 @@
   Drupal.behaviors.softLengthLimit = {
     attach: function (context, settings) {
 
-      // Adds the soft limit counter to fields with a maxlength
-      // defined, if not disabled.
-      if (Drupal.settings.soft_length_limit === undefined ||
-          Drupal.settings.soft_length_limit.maxlength_counter_disabled === undefined ||
-          !Drupal.settings.soft_length_limit.maxlength_counter_disabled) {
-
-        var excluded = [];
-        // Gets a list of selectors for elements that should be
-        // excluded even though they have a max length.
-        if (Drupal.settings.soft_length_limit !== undefined || Drupal.settings.soft_length_limit.maxlength_exclude_selectors !== undefined) {
-          excluded = Drupal.settings.soft_length_limit.maxlength_exclude_selectors;
-        }
-        // Adds soft length limit to the maxlength elements.
-        var excludeSelectors = excluded.join(', ');
-        $('[maxlength]').not('.soft-length-limit').not(excludeSelectors).each(function(index,val){
-          var maxlength = $(this).attr('maxlength');
-          $(this).attr('data-soft-length-limit',maxlength);
-          $(this).addClass('soft-length-limit');
-        });
-      }
-
-
       // Preparing the input elements by adding a tooltip container.
       $('.soft-length-limit').each(function(index){
         var $parent = $(this).parent();
@@ -75,7 +53,7 @@
         }
 
         // Adds the "exceeded" class if length is exceeded.
-        if (prevText.length <= limit && val.length > limit) {
+        if (val.length > limit && !$tooltip.hasClass('exceeded')) {
           $tooltip.addClass('exceeded');
           $(this).addClass('exceeded');
         }
