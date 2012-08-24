@@ -104,27 +104,25 @@ function soft_length_limit_set_attr(&$element, $sub_elements) {
  * Implements hook_init().
  */
 function soft_length_limit_init() {
+  global $theme_key;
+
+  // Check if we should only display this on admin pages.
+  if (variable_get('soft_length_limit_maxlength_counter_admin_only', FALSE) && !path_is_admin(current_path())) {
+    return;
+  }
+
+  // Check if the theme is part of the white listed themes, if any is set.
+  $allowed_themes = variable_get('soft_length_limit_maxlength_counter_themes', array());
+  if (count($allowed_themes) && !in_array($theme_key, $allowed_themes)) {
+    return;
+  }
+
   // Return if counter on maxlength fields is disabled.
   if (variable_get('soft_length_limit_maxlength_counter_disabled', FALSE)) {
     drupal_add_js(array(
       'soft_length_limit' => array('maxlength_counter_disabled' => TRUE),
         ), array('type' => 'setting'));
     return;
-  }
-  // Or add the javascript to every page that uses the admin theme.
-  global $theme_key;
-
-  $admin_only = variable_get('soft_length_limit_maxlength_counter_admin_only', FALSE);
-  if ($admin_only) {
-    if ($theme_key != variable_get('admin_theme', 'seven')) {
-      return;
-    }
-  }
-  else {
-    $allowed_themes = variable_get('soft_length_limit_maxlength_counter_themes', array());
-    if (count($allowed_themes) && !in_array($theme_key, $allowed_themes)) {
-      return;
-    }
   }
 
   drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/jquery.textchange.min.js');
