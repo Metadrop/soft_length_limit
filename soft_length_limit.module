@@ -18,12 +18,21 @@ function _soft_length_limit_types($usage) {
   switch ($usage) {
     case 'fields':
       return array(
-        'text_textarea',
-        'text_textfield',
-        'text_textarea_with_summary',
+        'text_textarea' => 'text_textarea',
+        'text_textfield' => 'text_textfield',
+        'text_textarea_with_summary' => 'text_textarea_with_summary',
       );
     case 'elements':
-      return array('textarea', 'textfield', 'text_format');
+      return array(
+        'textarea' => 'textarea',
+        'textfield' => 'textfield',
+        'text_format' => 'text_format',
+      );
+    case 'entity_types':
+      return array(
+        'node' => 'node',
+      );
+      break;
   }
 }
 
@@ -33,7 +42,7 @@ function _soft_length_limit_types($usage) {
 function soft_length_limit_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
   $types = _soft_length_limit_types('fields');
 
-  if (in_array($form['#instance']['widget']['type'], $types)) {
+  if (isset($types[$form['#instance']['widget']['type']])) {
     $form['instance']['widget']['settings']['soft_length_limit'] = array(
       '#type' => 'textfield',
       '#title' => t('Soft length limit'),
@@ -48,7 +57,13 @@ function soft_length_limit_form_field_ui_field_edit_form_alter(&$form, &$form_st
  * Implements hook_field_attach_form().
  */
 function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
+  $entity_types = _soft_length_limit_types('entity_types');
+  if (!isset($entity_types[$entity_type])) {
+    return;
+  }
+  
   $fields = field_info_instances($entity_type, $form['#bundle']);
+
   $elements = array();
   foreach ($fields as $key => $value) {
     if (isset($value['widget']['settings']['soft_length_limit']) &&
@@ -56,6 +71,12 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
       $elements[$key] = $value;
     }
   }
+
+  if (isset($form['title'])) {
+    $form['title']['#attributes']['class'][] = 'soft-length-limit';
+    $form['title']['#attributes']['data-soft-length-limit'] = $form['title']['#maxlength'];
+  }
+
   if (count($elements)) {
     soft_length_limit_set_attr($form, $elements);
     // Adds the javascript and CSS files as form attachments, in case the init
@@ -63,11 +84,6 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
     $form['#attached']['js'][] = drupal_get_path('module', 'soft_length_limit') . '/jquery.textchange.min.js';
     $form['#attached']['js'][] = drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.js';
     $form['#attached']['css'][] = drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.css';
-    drupal_add_js(array(
-        'soft_length_limit' => array(
-          'maxlength_exclude_selectors' => variable_get('soft_length_limit_maxlength_exclude_selectors', array()),
-        ),
-      ), array('type' => 'setting'));
   }
 }
 
@@ -86,9 +102,10 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
  */
 function soft_length_limit_set_attr(&$element, $sub_elements) {
   $children = element_get_visible_children($element);
+  
   $types = _soft_length_limit_types('elements');
   foreach ($children as $value) {
-    if (isset($element[$value]['#type']) && in_array($element[$value]['#type'], $types)) {
+    if (isset($element[$value]['#type']) && isset($types[$element[$value]['#type']])) {
       if (isset($element[$value]['#field_name']) && isset($sub_elements[$element[$value]['#field_name']])) {
         $soft_limit = $sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_limit'];
         $element[$value]['#soft_length_limit'] = (isset($element[$value]['#maxlength']) && $soft_limit > $element[$value]['#maxlength']) ? $element[$value]['#maxlength'] : $soft_limit;
@@ -98,39 +115,4 @@ function soft_length_limit_set_attr(&$element, $sub_elements) {
     }
     soft_length_limit_set_attr($element[$value], $sub_elements);
   }
-}
-
-/**
- * Implements hook_init().
- */
-function soft_length_limit_init() {
-  global $theme_key;
-
-  // Check if we should only display this on admin pages.
-  if (variable_get('soft_length_limit_maxlength_counter_admin_only', FALSE) && !path_is_admin(current_path())) {
-    return;
-  }
-
-  // Check if the theme is part of the white listed themes, if any is set.
-  $allowed_themes = variable_get('soft_length_limit_maxlength_counter_themes', array());
-  if (count($allowed_themes) && !in_array($theme_key, $allowed_themes)) {
-    return;
-  }
-
-  // Return if counter on maxlength fields is disabled.
-  if (variable_get('soft_length_limit_maxlength_counter_disabled', FALSE)) {
-    drupal_add_js(array(
-      'soft_length_limit' => array('maxlength_counter_disabled' => TRUE),
-        ), array('type' => 'setting'));
-    return;
-  }
-
-  drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/jquery.textchange.min.js');
-  drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.js');
-  drupal_add_css(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.css');
-  drupal_add_js(array(
-      'soft_length_limit' => array(
-        'maxlength_exclude_selectors' => variable_get('soft_length_limit_maxlength_exclude_selectors', array()),
-      ),
-    ), array('type' => 'setting'));
 }
