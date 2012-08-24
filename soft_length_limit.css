@@ -1,34 +1,8 @@
 .soft-length-limit-tooltip {
-  background-color: #be7;
-  border-radius: 5px;
-  color: black;
-  display: inline-block;
+  font-style: italic;
   display: none;
-  padding: 5px;
-  position: absolute;
-  z-index: 10;
 }
 
-.soft-length-limit-tooltip:after {
-  border-color: #be7 transparent;
-  border-style: solid;
-  border-width: 0 10px 10px;
-  content: "";
-  display: block;
-  left: 20px;
-  position: absolute;
-  top: -10px;
-  width: 0;
-}
-
-.soft-length-limit-tooltip.exceeded {
-  background-color: #f60;
-}
-
-.soft-length-limit-tooltip.exceeded:after {
-  border-color: #f60 transparent;
-}
-
-.soft-length-limit.exceeded {
-  outline: 3px solid #f60;
+.form-item div.soft-length-limit-tooltip.exceeded {
+  color: #a44;
 }
