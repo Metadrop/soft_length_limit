@@ -27,8 +27,7 @@
       // Preparing the input elements by adding a tooltip container.
       $('.soft-length-limit').each(function(index){
         var $parent = $(this).parent();
-        $parent.css('position','relative');
-        $parent.append('<div class="soft-length-limit-tooltip"></div>');
+        $(this).before('<div class="soft-length-limit-tooltip description"></div>');
         $element = $(this);
 
         // Used for automatically moving the tooltip when resizing the
@@ -52,14 +51,13 @@
         var bottom = top + $(this).outerHeight(true);
         var right = left + $(this).outerWidth(true);
         $(this).trigger('textchange', $(this).val());
-        $tooltip.css('left', 0).css('top', bottom + 10).css('position', 'absolute');
-        $tooltip.fadeIn('fast');
+        $tooltip.slideDown('fast');
       });
 
       // Hides the tooltip.
       $('.soft-length-limit').blur(function(event){
         var $tooltip = $(this).parent().find('.soft-length-limit-tooltip');
-        $tooltip.fadeOut('fast');
+        $tooltip.slideUp('fast');
       });
 
       // Shows the relevant info to the user in the tooltip.
@@ -83,19 +81,20 @@
         }
 
         if (val.length === 0) {
-          $tooltip.html(Drupal.t('Should contain max. <strong>@limit</strong> characters.',{
+          $tooltip.html(Drupal.t('Content limited to @limit characters.',{
             '@limit': limit
           }));
 
         }
         else if (remaining < 0) {
-          $tooltip.html(Drupal.t('<strong>@limit</strong> character limit exceeded by <strong>@exceed</strong> characters',{
+          $tooltip.html(Drupal.t('@limit character limit exceeded by @exceed characters.',{
             '@limit': limit,
             '@exceed': -remaining
           }));
         }
         else {
-          $tooltip.html(Drupal.t('<strong>@remaining</strong> characters left',{
+          $tooltip.html(Drupal.t('Content limited to @limit characters. Remaining: @remaining',{
+            '@limit': limit,
             '@remaining': remaining
           }));
         }
