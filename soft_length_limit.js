@@ -3,7 +3,9 @@
     attach: function (context, settings) {
 
       // Preparing the input elements by adding a tooltip container.
-      $('.soft-length-limit').each(function(index){
+      $('.soft-length-limit:not(.soft-length-limit-processed)').each(function(index){
+        $(this).addClass('soft-length-limit-processed');
+
         var $parent = $(this).parent();
         $(this).before('<div class="soft-length-limit-tooltip description"></div>');
         $element = $(this);
