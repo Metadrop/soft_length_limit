@@ -1,6 +1,9 @@
 .soft-length-limit-tooltip {
   font-style: italic;
   display: none;
+  position: absolute;
+  display: inline-block;
+  z-index: 10;
 }
 
 .form-item div.soft-length-limit-tooltip.exceeded {

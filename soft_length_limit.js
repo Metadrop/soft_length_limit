@@ -7,7 +7,8 @@
         $(this).addClass('soft-length-limit-processed');
 
         var $parent = $(this).parent();
-        $(this).before('<div class="soft-length-limit-tooltip description"></div>');
+        $parent.css('position','relative');
+        $parent.append('<div class="soft-length-limit-tooltip description"></div>');
         $element = $(this);
 
         // Used for automatically moving the tooltip when resizing the
@@ -31,13 +32,14 @@
         var bottom = top + $(this).outerHeight(true);
         var right = left + $(this).outerWidth(true);
         $(this).trigger('textchange', $(this).val());
-        $tooltip.slideDown('fast');
+        $tooltip.css('left', 0).css('top', bottom + 10);
+        $tooltip.fadeIn('fast');
       });
 
       // Hides the tooltip.
       $('.soft-length-limit').blur(function(event){
         var $tooltip = $(this).parent().find('.soft-length-limit-tooltip');
-        $tooltip.slideUp('fast');
+        $tooltip.fadeOut('fast');
       });
 
       // Shows the relevant info to the user in the tooltip.
