@@ -72,7 +72,7 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
     }
   }
 
-  if (isset($form['title'])) {
+  if (isset($form['title']) and isset($form['title']['#maxlength'])) {
     $form['title']['#attributes']['class'][] = 'soft-length-limit';
     $form['title']['#attributes']['data-soft-length-limit'] = $form['title']['#maxlength'];
   }
