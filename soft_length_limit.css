@@ -1,8 +1,7 @@
 .soft-length-limit-tooltip {
-  font-style: italic;
-  display: none;
-  position: absolute;
   display: inline-block;
+  font-style: italic;
+  position: absolute;
   z-index: 10;
 }
 
