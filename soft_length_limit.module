@@ -15,25 +15,31 @@
  *   An array field widget or form element type names
  */
 function _soft_length_limit_types($usage) {
+  $return = array();
   switch ($usage) {
     case 'fields':
-      return array(
+      $return = array(
         'text_textarea' => 'text_textarea',
         'text_textfield' => 'text_textfield',
         'text_textarea_with_summary' => 'text_textarea_with_summary',
       );
+      break;
+
     case 'elements':
-      return array(
+      $return = array(
         'textarea' => 'textarea',
         'textfield' => 'textfield',
         'text_format' => 'text_format',
       );
+      break;
+
     case 'entity_types':
-      return array(
+      $return = array(
         'node' => 'node',
       );
       break;
   }
+  return $return;;
 }
 
 /**
