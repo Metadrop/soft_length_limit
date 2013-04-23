@@ -44,6 +44,8 @@ function _soft_length_limit_types($usage) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ *
+ * Adds the soft length limit input field to the field configuration page.
  */
 function soft_length_limit_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
   $types = _soft_length_limit_types('fields');
@@ -61,6 +63,8 @@ function soft_length_limit_form_field_ui_field_edit_form_alter(&$form, &$form_st
 
 /**
  * Implements hook_field_attach_form().
+ *
+ * Adds the soft length limit counter elements to the relevant fields.
  */
 function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
   $entity_types = _soft_length_limit_types('entity_types');
