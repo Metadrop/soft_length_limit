@@ -32,7 +32,14 @@
         var bottom = top + $(this).outerHeight(true);
         var right = left + $(this).outerWidth(true);
         $(this).trigger('textchange', $(this).val());
-        $tooltip.css('left', 0).css('top', bottom + 10);
+
+        if ($(this).get(0).tagName == "TEXTAREA") {
+          $tooltip.css('left', 10).css('top', bottom + 5);
+        }
+        else {
+          $tooltip.css('left', 10).css('top', bottom - 4);
+        }
+
         $tooltip.fadeIn('fast');
       });
 
@@ -45,9 +52,11 @@
       // Shows the relevant info to the user in the tooltip.
       $('.soft-length-limit').bind('textchange', function(event, prevText){
         var limit = $(this).attr('data-soft-length-limit');
+        var minimum = $(this).attr('data-soft-length-minimum');
         var val = $(this).val();
         var remaining = limit - val.length;
         var $tooltip = $(this).parent().find('.soft-length-limit-tooltip');
+        var styleSelect = $(this).attr('data-soft-length-style-select');
 
         // Removes the "exceeded" class if length is not exceeded
         // anymore.
@@ -62,23 +71,78 @@
           $(this).addClass('exceeded');
         }
 
-        if (val.length === 0) {
-          $tooltip.html(Drupal.t('Content limited to @limit characters.',{
-            '@limit': limit
-          }));
+        // Adds the "exceeded" class if the length is less than the minimum, in the case where the minimum is set.
+        // Adds the "under-min" class, for under-character-minimum specific behavior. Used for min/enhanced character count.
+        if (minimum > 0) {
+          if (val.length < minimum && val.length < limit && !$tooltip.hasClass('exceeded')) {
+            $tooltip.addClass('exceeded under-min');
+            $(this).addClass('exceeded under-min');
+          }
+          else if (val.length <= limit && val.length >= minimum) {
+            $tooltip.removeClass('exceeded under-min');
+            $(this).removeClass('exceeded under-min');
+          }
+        }
 
+        // The minimal/enhanced version of character limits
+        if ( styleSelect == '1' ) {
+            // No minimum treatment
+            $tooltip.html(Drupal.t('@val/@limit', {
+                '@val': val.length,
+                '@limit': limit
+            }));
+            // Add class to tooltip for different CSS treatment (icons, text alignment, etc )
+            $tooltip.parent().children('.soft-length-limit-tooltip').addClass('min-style-tooltip');
         }
-        else if (remaining < 0) {
-          $tooltip.html(Drupal.t('@limit character limit exceeded by @exceed characters.',{
-            '@limit': limit,
-            '@exceed': -remaining
-          }));
-        }
-        else {
-          $tooltip.html(Drupal.t('Content limited to @limit characters. Remaining: @remaining',{
-            '@limit': limit,
-            '@remaining': remaining
-          }));
+
+        // Original character limit treatment
+        if ( styleSelect == '0' ) {
+            // No minimum value is set.
+            if (minimum < 1) {
+              if (val.length === 0) {
+                $tooltip.html(Drupal.t('Content limited to @limit characters',{
+                  '@limit': limit
+                }));
+              }
+              else if (remaining < 0) {
+                $tooltip.html(Drupal.t('@limit character limit exceeded by @exceed characters.',{
+                  '@limit': limit,
+                  '@exceed': -remaining
+                }));
+              }
+              else {
+                $tooltip.html(Drupal.t('Content limited to @limit characters. Remaining: @remaining',{
+                  '@limit': limit,
+                  '@remaining': remaining
+                }));
+              }
+            }
+            // There is a minimum length set.
+            else {
+              if (val.length === 0) {
+                $tooltip.html(Drupal.t('Suggested minimum number of characters is @minimum, current count is @val.  Content limited to @limit characters. ',{
+                  '@limit': limit,
+                  '@minimum': minimum,
+                  '@val': val.length
+                }));
+              }
+              else if (remaining < 0) {
+                $tooltip.html(Drupal.t('Suggested minimum number of characters is @minimum, current count is @val.  @limit character limit exceeded by @exceed characters.',{
+                  '@limit': limit,
+                  '@exceed': -remaining,
+                  '@minimum': minimum,
+                  '@val': val.length
+                }));
+              }
+              else {
+                $tooltip.html(Drupal.t('Suggested minimum number of characters is @minimum, current count is @val.  Content limited to @limit characters. Remaining: @remaining.',{
+                  '@limit': limit,
+                  '@remaining': remaining,
+                  '@minimum': minimum,
+                  '@val': val.length
+                }));
+              }
+            }
         }
       });
     }

@@ -8,3 +8,21 @@
 .form-item div.soft-length-limit-tooltip.exceeded {
   color: #a44;
 }
+
+/* Min/Enhanced tooltip */
+.field-type-text .form-item .soft-length-limit-tooltip.min-style-tooltip {
+  background-image: url(ico_socpub_confirm.png);
+  background-repeat: no-repeat;
+  background-position: left top;
+  background-color: transparent;
+  background-size: 15px 15px;
+  padding: 0 0 0 20px;
+  left: auto !important;
+  right: 10px;
+}
+.field-type-text .form-item .soft-length-limit-tooltip.min-style-tooltip.exceeded.under-min {
+  background-image: none;
+}
+.field-type-text .form-item .soft-length-limit-tooltip.min-style-tooltip.exceeded {
+  background-image: url(ico_socpub_alert.png);
+}

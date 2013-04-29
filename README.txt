@@ -31,7 +31,7 @@ which elements should have the limit counter:
 If set to TRUE, no fields with maxlength attribute will have a counter.
 
 
-* (bool) soft_length_limit_maxlength_counter_admin_only: 
+* (bool) soft_length_limit_maxlength_counter_admin_only:
 
 If set to TRUE, the counter will only be shown when the admin_theme is
 active.
@@ -49,3 +49,7 @@ This is an array of jQuery selectors (using classes, IDs etc.) for
 elements which should be excluded from having a counter, although they
 have a defined maxlength, i.e. date fields, autocomplete fields
 etc. could be added here.
+
+* The icons for this came from Creative Commons Attribution 3.0
+Unported License, and they came from http://icomoon.io/#icons free
+package.
