@@ -226,8 +226,8 @@ function soft_length_limit_form_node_form_alter(&$form, $form_state) {
     $form['title']['#attributes']['class'][] = 'soft-length-limit';
     $form['title']['#attributes']['data-soft-length-limit'] = $max_length;
     $form['title']['#attributes']['data-soft-length-minimum'] = $min_length;
-    drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/jquery.textchange.min.js');
-    drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.js');
-    drupal_add_css(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.css');
+  #  $form['#attached']['js'][] = drupal_get_path('module', 'soft_length_limit') . '/jquery.textchange.min.js';
+  #  $form['#attached']['js'][] = drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.js';
+  #  $form['#attached']['css'][] = drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.css';
   }
 }
