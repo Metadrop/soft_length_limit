@@ -188,10 +188,7 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
  *   Array of the elements which should have a soft limit attribute
  */
 function soft_length_limit_set_attr(&$element, $sub_elements) {
-  dpm($sub_elements);
-  dpm($element);
   $children = element_get_visible_children($element);
-  dpm($children);
   $types = _soft_length_limit_types('elements');
   foreach ($children as $value) {
     if (isset($element[$value]['#type']) && isset($types[$element[$value]['#type']])) {
