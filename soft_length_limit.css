@@ -1,6 +1,7 @@
 .soft-length-limit-tooltip {
   display: inline-block;
   font-style: italic;
+  position: absolute;
   z-index: 10;
 }
 
@@ -15,11 +16,9 @@
   background-position: left top;
   background-repeat: no-repeat;
   background-size: 15px 15px;
-  display: block;
-  float: right;
-  min-height: 15px;
-  padding: 0 20px;
-  text-align: right;
+  left: auto !important;
+  padding: 0 0 0 20px;
+  right: 10px;
 }
 .field-type-text .form-item .soft-length-limit-tooltip.min-style-tooltip.exceeded.under-min {
   background-image: none;

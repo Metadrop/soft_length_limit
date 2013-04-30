@@ -5,9 +5,10 @@
       // Preparing the input elements by adding a tooltip container.
       $('.soft-length-limit:not(.soft-length-limit-processed)').each(function(index){
         $(this).addClass('soft-length-limit-processed');
+
         var $parent = $(this).parent();
-        var $parentInput = $parent.children('input.soft-length-limit');
-        $parentInput.after('<div class="soft-length-limit-tooltip description"></div>');
+        $parent.css('position','relative');
+        $parent.append('<div class="soft-length-limit-tooltip description"></div>');
         $element = $(this);
 
         // Used for automatically moving the tooltip when resizing the
