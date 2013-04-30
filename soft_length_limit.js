@@ -95,7 +95,7 @@
         }
 
         // Original character limit treatment
-        if ( styleSelect == '0' ) {
+        if ( (styleSelect == '0') || (styleSelect == undefined) ) {
             // No minimum value is set.
             if (minimum < 1) {
               if (val.length === 0) {

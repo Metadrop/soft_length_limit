@@ -5,6 +5,9 @@
  * Soft Length Limit module
  */
 
+define('SOFT_LENGTH_LIMIT_TITLE_MAX', 'soft_length_limit_title_max');
+define('SOFT_LENGTH_LIMIT_TITLE_MIN', 'soft_length_limit_title_min');
+
 /**
  * Returns the field widget or form element types that should be affected.
  *
@@ -49,19 +52,19 @@ function _soft_length_limit_types($usage) {
  * Adds soft length limit fields when editing a content type.
  */
 function soft_length_limit_form_node_type_form_alter(&$form, &$form_state, $form_id) {
-  $form['submission']['title_length'] = array(
+  $form['submission'][SOFT_LENGTH_LIMIT_TITLE_MAX] = array(
     '#type' => 'textfield',
     '#title' => t('Soft length limit'),
-    '#default_value' => variable_get($form['#node_type']->type . "_title_max_length", NULL),
+    '#default_value' => variable_get(SOFT_LENGTH_LIMIT_TITLE_MAX . '_' . $form['#node_type']->type, NULL),
     '#description' => t('If any value is given here, a counter will appear next to this field, informing the user of the chosen number of allowed characters. If the number is exceeded, a warning will be shown.'),
     '#element_validate' => array('element_validate_integer_positive'),
     '#weight' => -2,
   );
 
-  $form['submission']['soft_length_minimum'] = array(
+  $form['submission'][SOFT_LENGTH_LIMIT_TITLE_MIN] = array(
     '#type' => 'textfield',
     '#title' => t('Soft length minimum'),
-    '#default_value' => variable_get($form['#node_type']->type . '_title_min_length', NULL),
+    '#default_value' => variable_get(SOFT_LENGTH_LIMIT_TITLE_MIN . '_' . $form['#node_type']->type, NULL),
     '#description' => t('If any value is given here, the minimum number recommended characters will be displayed as the editor enters text in this field.'),
     '#element_validate' => array('element_validate_integer_positive'),
     '#weight' => -1,
@@ -80,15 +83,15 @@ function soft_length_limit_form_node_type_form_alter(&$form, &$form_state, $form
  * Form validate handler for title length fields.
  */
 function soft_length_limit_validate_title_length($form, &$form_state) {
-  if (($form_state['values']['title_length'] < 0) || ($form_state['values']['title_length'] > 255)) {
+  if (($form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MAX] < 0) || ($form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MAX] > 255)) {
     form_set_error('title_length', t('The value for soft length limit must be a whole number greater than zero and less than 256'), NULL);
   }
 
-  if (($form_state['values']['soft_length_minimum'] < 0) || ($form_state['values']['soft_length_minimum'] > 255)) {
+  if (($form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MIN] < 0) || ($form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MIN] > 255)) {
     form_set_error('soft_length_minimum', t('The value for soft length minimum must be a whole number greater than zero and less than 256'));
   }
 
-  if ($form_state['values']['title_length'] < $form_state['values']['soft_length_minimum']) {
+  if ($form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MAX] < $form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MIN]) {
     form_set_error('soft_length_minimum', t('The value for soft length minimum must be less than or equal to the soft length limit'));
   }
 }
@@ -97,14 +100,14 @@ function soft_length_limit_validate_title_length($form, &$form_state) {
  * Save the values of max and minimum for title so they can be applied later as an override to #maxlength.
  */
 function soft_length_limit_set_title_maxlength($form, &$form_state) {
-  variable_set($form_state['values']['type']."_title_max_length", $form_state['values']['title_length']);
-  variable_set($form_state['values']['type']."_title_min_length", $form_state['values']['soft_length_minimum']);
+  variable_set(SOFT_LENGTH_LIMIT_TITLE_MAX . '_' . $form_state['values']['type'], $form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MAX]);
+  variable_set(SOFT_LENGTH_LIMIT_TITLE_MIN . '_' . $form_state['values']['type'], $form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MIN]);
 }
 
 /**
  * Implements hook_form_FORM_ID_alter()
  *
- * Adds soft length limit fields when editing a field.
+ * Adds soft length limit fields when a field form field is rendered.
  */
 function soft_length_limit_form_field_ui_field_edit_form_alter(&$form, &$form_state) {
   $types = _soft_length_limit_types('fields');
@@ -158,15 +161,6 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
     }
   }
 
-  $title_max_length = variable_get($form['type']['#value']."_title_max_length");
-  $title_min_length = variable_get($form['type']['#value']."_title_min_length");
-
-  if (isset($form['title']) && $title_max_length > 0 || isset($form['title']) && $title_min_length > 0) {
-    $form['title']['#attributes']['class'][] = 'soft-length-limit';
-    $form['title']['#attributes']['data-soft-length-limit'] = $title_max_length;
-    $form['title']['#attributes']['data-soft-length-minimum'] =  $title_min_length;
-  }
-
   if (count($elements)) {
     soft_length_limit_set_attr($form, $elements);
     // Adds the javascript and CSS files as form attachments, in case the init
@@ -211,5 +205,26 @@ function soft_length_limit_set_attr(&$element, $sub_elements) {
       }
     }
     soft_length_limit_set_attr($element[$value], $sub_elements);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ *
+ * Adds CSS and JS to display soft_length_limits when they are set for the title field.
+ */
+function soft_length_limit_form_node_form_alter(&$form, $form_state) {
+  $type = $form['#node']->type;
+  $max_length = variable_get(SOFT_LENGTH_LIMIT_TITLE_MAX . '_' . $type, NULL);
+  $min_length = variable_get(SOFT_LENGTH_LIMIT_TITLE_MIN . '_' . $type, NULL);
+
+  // Play nice with title module ensuring that core's title is present.
+  if (isset($form['title']) && (!empty($max_length) || !empty($min_length))) {
+    $form['title']['#attributes']['class'][] = 'soft-length-limit';
+    $form['title']['#attributes']['data-soft-length-limit'] = $max_length;
+    $form['title']['#attributes']['data-soft-length-minimum'] =  $min_length;
+    drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/jquery.textchange.min.js');
+    drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.js');
+    drupal_add_css(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.css');
   }
 }
