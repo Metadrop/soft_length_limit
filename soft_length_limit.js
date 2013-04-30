@@ -84,7 +84,7 @@
         }
 
         // The minimal/enhanced version of character limits
-        if ( styleSelect == '1' ) {
+        if (styleSelect == '1') {
             // No minimum treatment
             $tooltip.html(Drupal.t('@val/@limit', {
                 '@val': val.length,
@@ -95,7 +95,7 @@
         }
 
         // Original character limit treatment
-        if ( (styleSelect == '0') || (styleSelect == undefined) ) {
+        if ((styleSelect == '0') || (styleSelect == undefined)) {
             // No minimum value is set.
             if (minimum < 1) {
               if (val.length === 0) {

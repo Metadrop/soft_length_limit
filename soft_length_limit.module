@@ -47,7 +47,7 @@ function _soft_length_limit_types($usage) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter()
+ * Implements hook_form_FORM_ID_alter().
  *
  * Adds soft length limit fields when editing a content type.
  */
@@ -72,7 +72,8 @@ function soft_length_limit_form_node_type_form_alter(&$form, &$form_state, $form
 
   $form['submission']['title_label']['#weight'] = -3;
 
-  // Add a custom submit handler to validate that the editor didn't set the maximum length to greater than 255 characters.
+  // Add a custom submit handler to validate that the editor didn't set the
+  // maximum length to greater than 255 characters.
   $form['#validate'][] = 'soft_length_limit_validate_title_length';
 
   // Add a custom submit handler to save the title maximum and minimum.
@@ -97,7 +98,9 @@ function soft_length_limit_validate_title_length($form, &$form_state) {
 }
 
 /**
- * Save the values of max and minimum for title so they can be applied later as an override to #maxlength.
+ * Save the values of max and minimum for title.
+ * 
+ * So they can be applied later as an override to #maxlength.
  */
 function soft_length_limit_set_title_maxlength($form, &$form_state) {
   variable_set(SOFT_LENGTH_LIMIT_TITLE_MAX . '_' . $form_state['values']['type'], $form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MAX]);
@@ -105,7 +108,7 @@ function soft_length_limit_set_title_maxlength($form, &$form_state) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter()
+ * Implements hook_form_FORM_ID_alter().
  *
  * Adds soft length limit fields when a field form field is rendered.
  */
@@ -114,32 +117,32 @@ function soft_length_limit_form_field_ui_field_edit_form_alter(&$form, &$form_st
 
   if (isset($types[$form['#instance']['widget']['type']])) {
 
-  $form['instance']['widget']['settings']['soft_length_limit'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Soft length limit'),
-    '#default_value' => isset($form['#instance']['widget']['settings']['soft_length_limit']) ? $form['#instance']['widget']['settings']['soft_length_limit'] : NULL,
-    '#description' => t('If any value is given here, a counter will appear next to this field, informing the user of the chosen number of allowed characters. If the number is exceeded, a warning will be shown.'),
-    '#element_validate' => array('element_validate_integer_positive'),
-    '#weight' => -3,
-  );
+    $form['instance']['widget']['settings']['soft_length_limit'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Soft length limit'),
+      '#default_value' => isset($form['#instance']['widget']['settings']['soft_length_limit']) ? $form['#instance']['widget']['settings']['soft_length_limit'] : NULL,
+      '#description' => t('If any value is given here, a counter will appear next to this field, informing the user of the chosen number of allowed characters. If the number is exceeded, a warning will be shown.'),
+      '#element_validate' => array('element_validate_integer_positive'),
+      '#weight' => -3,
+    );
 
-  $form['instance']['widget']['settings']['soft_length_minimum'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Soft length minimum'),
-    '#default_value' => isset($form['#instance']['widget']['settings']['soft_length_minimum']) ? $form['#instance']['widget']['settings']['soft_length_minimum'] : NULL,
-    '#description' => t('If any value is given here, the minimum number recommended characters will be displayed as the editor enters text in this field.'),
-    '#element_validate' => array('element_validate_integer_positive'),
-    '#weight' => -2,
-  );
+    $form['instance']['widget']['settings']['soft_length_minimum'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Soft length minimum'),
+      '#default_value' => isset($form['#instance']['widget']['settings']['soft_length_minimum']) ? $form['#instance']['widget']['settings']['soft_length_minimum'] : NULL,
+      '#description' => t('If any value is given here, the minimum number recommended characters will be displayed as the editor enters text in this field.'),
+      '#element_validate' => array('element_validate_integer_positive'),
+      '#weight' => -2,
+    );
 
-  $form['instance']['widget']['settings']['soft_length_style_select'] = array(
+    $form['instance']['widget']['settings']['soft_length_style_select'] = array(
       '#type' => 'checkbox',
       '#title' => t('Enable enhanced view'),
       '#default_value' => isset($form['#instance']['widget']['settings']['soft_length_style_select']) ? $form['#instance']['widget']['settings']['soft_length_style_select'] : 0,
       '#description' => t('Check this to enable an enhanced view of soft length states.'),
       '#weight' => -1,
-  );
- }
+    );
+  }
 }
 
 /**
@@ -185,8 +188,10 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
  *   Array of the elements which should have a soft limit attribute
  */
 function soft_length_limit_set_attr(&$element, $sub_elements) {
+  dpm($sub_elements);
+  dpm($element);
   $children = element_get_visible_children($element);
-
+  dpm($children);
   $types = _soft_length_limit_types('elements');
   foreach ($children as $value) {
     if (isset($element[$value]['#type']) && isset($types[$element[$value]['#type']])) {
@@ -194,9 +199,9 @@ function soft_length_limit_set_attr(&$element, $sub_elements) {
         $soft_limit = $sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_limit'];
         $soft_min   = $sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_minimum'];
         $element[$value]['#soft_length_limit'] = (isset($element[$value]['#maxlength']) && $soft_limit > $element[$value]['#maxlength']) ? $element[$value]['#maxlength'] : $soft_limit;
-        if ( isset( $sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_style_select'] ) ) {
-            $soft_enhance = $sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_style_select'];
-            $element[$value]['#attributes']['data-soft-length-style-select'] = $soft_enhance;
+        if (isset($sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_style_select'])) {
+          $soft_enhance = $sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_style_select'];
+          $element[$value]['#attributes']['data-soft-length-style-select'] = $soft_enhance;
         }
         $element[$value]['#attributes']['class'][] = 'soft-length-limit';
         $element[$value]['#attributes']['data-soft-length-limit'] = $soft_limit;
@@ -209,9 +214,10 @@ function soft_length_limit_set_attr(&$element, $sub_elements) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter()
+ * Implements hook_form_FORM_ID_alter().
  *
- * Adds CSS and JS to display soft_length_limits when they are set for the title field.
+ * Adds CSS and JS to display soft_length_limits when they are set for the
+ * title field.
  */
 function soft_length_limit_form_node_form_alter(&$form, $form_state) {
   $type = $form['#node']->type;
@@ -222,7 +228,7 @@ function soft_length_limit_form_node_form_alter(&$form, $form_state) {
   if (isset($form['title']) && (!empty($max_length) || !empty($min_length))) {
     $form['title']['#attributes']['class'][] = 'soft-length-limit';
     $form['title']['#attributes']['data-soft-length-limit'] = $max_length;
-    $form['title']['#attributes']['data-soft-length-minimum'] =  $min_length;
+    $form['title']['#attributes']['data-soft-length-minimum'] = $min_length;
     drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/jquery.textchange.min.js');
     drupal_add_js(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.js');
     drupal_add_css(drupal_get_path('module', 'soft_length_limit') . '/soft_length_limit.css');
