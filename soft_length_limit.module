@@ -7,6 +7,7 @@
 
 define('SOFT_LENGTH_LIMIT_TITLE_MAX', 'soft_length_limit_title_max');
 define('SOFT_LENGTH_LIMIT_TITLE_MIN', 'soft_length_limit_title_min');
+define('SOFT_LENGTH_STYLE_SELECT', 'soft_length_style_select');
 
 /**
  * Returns the field widget or form element types that should be affected.
@@ -70,6 +71,14 @@ function soft_length_limit_form_node_type_form_alter(&$form, &$form_state, $form
     '#weight' => -1,
   );
 
+  $form['submission'][SOFT_LENGTH_STYLE_SELECT] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable enhanced view'),
+    '#default_value' => variable_get(SOFT_LENGTH_STYLE_SELECT . '_' . $form['#node_type']->type, NULL),
+    '#description' => t('Check this to enable an enhanced view of soft length states.'),
+    '#weight' => -1,
+  );
+
   $form['submission']['title_label']['#weight'] = -3;
 
   // Add a custom submit handler to validate that the editor didn't set the
@@ -103,8 +112,11 @@ function soft_length_limit_validate_title_length($form, &$form_state) {
  * So they can be applied later as an override to #maxlength.
  */
 function soft_length_limit_set_title_maxlength($form, &$form_state) {
+
   variable_set(SOFT_LENGTH_LIMIT_TITLE_MAX . '_' . $form_state['values']['type'], $form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MAX]);
   variable_set(SOFT_LENGTH_LIMIT_TITLE_MIN . '_' . $form_state['values']['type'], $form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MIN]);
+  variable_set(SOFT_LENGTH_STYLE_SELECT . '_' . $form_state['values']['type'], $form_state['values'][SOFT_LENGTH_STYLE_SELECT]);
+
 }
 
 /**
@@ -156,6 +168,7 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
   }
 
   $fields = field_info_instances($entity_type, $form['#bundle']);
+
   $elements = array();
 
   foreach ($fields as $key => $value) {
@@ -164,7 +177,7 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
     }
   }
 
-  if (count($elements)) {
+  if (count($elements) || isset($form['title'])) {
     soft_length_limit_set_attr($form, $elements);
     // Adds the javascript and CSS files as form attachments, in case the init
     // hook does not add them due to the context or settings.
@@ -203,7 +216,6 @@ function soft_length_limit_set_attr(&$element, $sub_elements) {
         $element[$value]['#attributes']['class'][] = 'soft-length-limit';
         $element[$value]['#attributes']['data-soft-length-limit'] = $soft_limit;
         $element[$value]['#attributes']['data-soft-length-minimum'] = $soft_min;
-
       }
     }
     soft_length_limit_set_attr($element[$value], $sub_elements);
@@ -220,6 +232,7 @@ function soft_length_limit_form_node_form_alter(&$form, $form_state) {
   $type = $form['#node']->type;
   $max_length = variable_get(SOFT_LENGTH_LIMIT_TITLE_MAX . '_' . $type, NULL);
   $min_length = variable_get(SOFT_LENGTH_LIMIT_TITLE_MIN . '_' . $type, NULL);
+  $style_select = variable_get(SOFT_LENGTH_STYLE_SELECT . '_' .$type, NULL);
 
   // Play nice with title module ensuring that core's title is present.
   if (isset($form['title']) && (!empty($max_length) || !empty($min_length))) {

@@ -10,6 +10,7 @@
 }
 
 /* Min/Enhanced tooltip */
+.fieldset-wrapper .form-item .soft-length-limit-tooltip.min-style-tooltip,
 .field-type-text .form-item .soft-length-limit-tooltip.min-style-tooltip {
   background-color: transparent;
   background-image: url(ico_socpub_confirm.png);
@@ -20,9 +21,12 @@
   padding: 0 0 0 20px;
   right: 10px;
 }
+.fieldset-wrapper .form-item .soft-length-limit-tooltip.min-style-tooltip.exceeded.under-min,
 .field-type-text .form-item .soft-length-limit-tooltip.min-style-tooltip.exceeded.under-min {
   background-image: none;
 }
+
+.fieldset-wrapper .form-item .soft-length-limit-tooltip.min-style-tooltip.exceeded,
 .field-type-text .form-item .soft-length-limit-tooltip.min-style-tooltip.exceeded {
   background-image: url(ico_socpub_alert.png);
 }
