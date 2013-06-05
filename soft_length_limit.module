@@ -229,6 +229,9 @@ function soft_length_limit_form_node_form_alter(&$form, $form_state) {
   $type = $form['#node']->type;
   $max_length = variable_get(SOFT_LENGTH_LIMIT_TITLE_MAX . '_' . $type, NULL);
   $min_length = variable_get(SOFT_LENGTH_LIMIT_TITLE_MIN . '_' . $type, NULL);
+  if (!$min_length) {
+    $min_length = 0;
+  }
   $style_select = variable_get(SOFT_LENGTH_STYLE_SELECT . '_' . $type, NULL);
 
   // Play nice with title module ensuring that core's title is present.
