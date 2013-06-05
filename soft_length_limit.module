@@ -112,11 +112,9 @@ function soft_length_limit_validate_title_length($form, &$form_state) {
  * So they can be applied later as an override to #maxlength.
  */
 function soft_length_limit_set_title_maxlength($form, &$form_state) {
-
   variable_set(SOFT_LENGTH_LIMIT_TITLE_MAX . '_' . $form_state['values']['type'], $form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MAX]);
   variable_set(SOFT_LENGTH_LIMIT_TITLE_MIN . '_' . $form_state['values']['type'], $form_state['values'][SOFT_LENGTH_LIMIT_TITLE_MIN]);
   variable_set(SOFT_LENGTH_STYLE_SELECT . '_' . $form_state['values']['type'], $form_state['values'][SOFT_LENGTH_STYLE_SELECT]);
-
 }
 
 /**
@@ -168,7 +166,6 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
   }
 
   $fields = field_info_instances($entity_type, $form['#bundle']);
-
   $elements = array();
 
   foreach ($fields as $key => $value) {
@@ -232,7 +229,7 @@ function soft_length_limit_form_node_form_alter(&$form, $form_state) {
   $type = $form['#node']->type;
   $max_length = variable_get(SOFT_LENGTH_LIMIT_TITLE_MAX . '_' . $type, NULL);
   $min_length = variable_get(SOFT_LENGTH_LIMIT_TITLE_MIN . '_' . $type, NULL);
-  $style_select = variable_get(SOFT_LENGTH_STYLE_SELECT . '_' .$type, NULL);
+  $style_select = variable_get(SOFT_LENGTH_STYLE_SELECT . '_' . $type, NULL);
 
   // Play nice with title module ensuring that core's title is present.
   if (isset($form['title']) && (!empty($max_length) || !empty($min_length))) {
