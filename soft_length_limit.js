@@ -74,14 +74,22 @@
         // Adds the "exceeded" class if the length is less than the minimum, in the case where the minimum is set.
         // Adds the "under-min" class, for under-character-minimum specific behavior. Used for min/enhanced character count.
         if (minimum > 0) {
-          if (val.length < minimum && val.length < limit && !$tooltip.hasClass('exceeded')) {
-            $tooltip.addClass('exceeded under-min');
-            $(this).addClass('exceeded under-min');
-          }
-          else if (val.length <= limit && val.length >= minimum) {
-            $tooltip.removeClass('exceeded under-min');
-            $(this).removeClass('exceeded under-min');
-          }
+            if (val.length < minimum) {
+                $tooltip.addClass('under-min');
+                $(this).addClass('under-min');
+            }
+            if (val.length >= minimum) {
+                $tooltip.removeClass('under-min');
+                $(this).removeClass('under-min');
+            }
+            if (val.length > limit) {
+                $tooltip.addClass('exceeded');
+                $(this).addClass('exceeded');
+            }
+            if (val.length <= limit) {
+                $tooltip.removeClass('exceeded');
+                $(this).removeClass('exceeded');
+            }
         }
 
         // The minimal/enhanced version of character limits
