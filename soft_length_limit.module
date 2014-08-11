@@ -200,21 +200,32 @@ function soft_length_limit_field_attach_form($entity_type, $entity, &$form, &$fo
 function soft_length_limit_set_attr(&$element, $sub_elements) {
   $children = element_get_visible_children($element);
   $types = _soft_length_limit_types('elements');
+
   foreach ($children as $value) {
     if (isset($element[$value]['#type']) && isset($types[$element[$value]['#type']])) {
       if (isset($element[$value]['#field_name']) && isset($sub_elements[$element[$value]['#field_name']])) {
-        $soft_limit = $sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_limit'];
-        $soft_min   = $sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_minimum'];
-        $element[$value]['#soft_length_limit'] = (isset($element[$value]['#maxlength']) && $soft_limit > $element[$value]['#maxlength']) ? $element[$value]['#maxlength'] : $soft_limit;
-        if (isset($sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_style_select'])) {
-          $soft_enhance = $sub_elements[$element[$value]['#field_name']]['widget']['settings']['soft_length_style_select'];
-          $element[$value]['#attributes']['data-soft-length-style-select'] = $soft_enhance;
+
+        $widget_settings = isset($sub_elements[$element[$value]['#field_name']]['widget']['settings']) ? $sub_elements[$element[$value]['#field_name']]['widget']['settings'] : FALSE;
+
+        if ($widget_settings) {
+          // Soft limit length.
+          $soft_limit = $widget_settings['soft_length_limit'];
+          $element[$value]['#soft_length_limit'] = (isset($element[$value]['#maxlength']) && $soft_limit > $element[$value]['#maxlength']) ? $element[$value]['#maxlength'] : $soft_limit;
+          $element[$value]['#attributes']['data-soft-length-limit'] = $soft_limit;
+          $element[$value]['#attributes']['class'][] = 'soft-length-limit';
+
+          // Soft minimum.
+          $soft_min = isset($widget_settings['soft_length_minimum']) ? $widget_settings['soft_length_minimum'] : '';
+          $element[$value]['#attributes']['data-soft-length-minimum'] = $soft_min;
+
+          // Length style select.
+          if (isset($widget_settings['soft_length_style_select'])) {
+            $element[$value]['#attributes']['data-soft-length-style-select'] = $widget_settings['soft_length_style_select'];
+          }
         }
-        $element[$value]['#attributes']['class'][] = 'soft-length-limit';
-        $element[$value]['#attributes']['data-soft-length-limit'] = $soft_limit;
-        $element[$value]['#attributes']['data-soft-length-minimum'] = $soft_min;
       }
     }
+
     soft_length_limit_set_attr($element[$value], $sub_elements);
   }
 }
