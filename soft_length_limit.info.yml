@@ -1,5 +1,0 @@
-name: Soft Length Limit
-type: module
-description: Soft limits number of chars in text fields, warning the user of too long texts
-package: Fields
-core: 8.x
