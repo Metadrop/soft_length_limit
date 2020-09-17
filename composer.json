@@ -1,0 +1,30 @@
+{
+  "name": "drupal/soft_length_limit",
+  "description": "Soft limits number of chars in text fields, warning the user of too long texts.",
+  "type": "drupal-module",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://drupal.org/project/soft_length_limit",
+  "authors": [
+    {
+      "name": "Salvador Molina",
+      "homepage": "https://www.drupal.org/u/slv_",
+      "role": "Maintainer"
+    },
+    {
+      "name": "Camilla Krag Jensen",
+      "homepage": "https://www.drupal.org/u/naxoc",
+      "role": "Maintainer"
+    },
+    {
+      "name": "Esben von Buchwald",
+      "homepage": "https://www.drupal.org/u/esbenvb",
+      "role": "Maintainer"
+    }
+  ],
+  "support": {
+    "issues": "https://drupal.org/project/issues/soft_length_limit",
+    "source": "https://git.drupalcode.org/project/soft_length_limit"
+  },
+  "require": { }
+}
+
